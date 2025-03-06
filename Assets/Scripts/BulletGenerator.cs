@@ -9,6 +9,9 @@ public class BulletGenerator : MonoBehaviour
     [SerializeField]
     private Transform _generationPoint = null;
 
+    [SerializeField]
+    LayerMask _layers;
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -40,8 +43,23 @@ public class BulletGenerator : MonoBehaviour
         //    GenerateBullet(Vector3.right);            
         //}
 
-        if(Input.GetKeyDown(KeyCode.Space)) {
-            GenerateBullet(_generationPoint.forward);
+        //if(Input.GetKeyDown(KeyCode.Space)) {
+        //    GenerateBullet(_generationPoint.forward);
+        //}
+    }
+
+    private void FixedUpdate()
+    {
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            Debug.DrawLine(_generationPoint.position, _generationPoint.forward * 10, Color.blue);
+            RaycastHit hit;
+            if (Physics.Raycast(_generationPoint.position, _generationPoint.forward, out hit, 10, _layers))
+            {
+                if (hit.collider.GetComponent<EnemyHealth>() != null) { 
+                    Destroy(hit.collider.gameObject);
+                }
+            }
         }
     }
 }
